@@ -11,7 +11,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 @XmlRootElement(name = "goal")
-@XmlType(propOrder = {"idGoal", "goalName", "current", "idealWeight", "date", "idealBmi", "shavedCalories", "foodSelections", "activitySelections"})
+@XmlType(propOrder = {"idGoal", "goalName", "current", "idealWeight", "date", "idealBmi", "shavedCalories", "activitySelections"})
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Goal implements Serializable {
 	private static final long serialVersionUID = 1L;
@@ -36,9 +36,6 @@ public class Goal implements Serializable {
 	
 	@XmlElement(name = "shavedCalories")
 	private double shavedCalories;
-	
-	@XmlElementWrapper(name = "foodSelections")
-	private List<FoodSelection> foodSelections;
 	
 	@XmlElementWrapper(name = "activitySelections")
 	private List<ActivitySelection> activitySelections;
