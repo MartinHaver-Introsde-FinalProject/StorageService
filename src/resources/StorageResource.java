@@ -235,34 +235,7 @@ public class StorageResource {
 		return null;
 	}
 
-	/*
-	 * Getting the current Food Selection of current Goal of a Person identified by idPerson.
-	 * 
-	 * FROM: http://localhost:8080/introsde.local-database-service/api/person/1/goal/foodSelection
-	 * 
-	 * URL: http://localhost:8080/introsde.storage-service/api/person/1/goal/foodSelection
-	 * 
-	 * GET: OK
-	 */
-
-	@GET
-	@Path("/person/{idPerson}/goal/foodSelection")
-	@Produces({ MediaType.TEXT_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-	public FoodSelection getFoodSelectionOfCurrentGoalOfPersonById(@PathParam("idPerson") int idPerson) {
-		System.out.println("Getting the current Food Selection of current Goal of a Person identified by idPerson = "
-				+ idPerson + "...");
-		ClientConfig clientConfig = new ClientConfig();
-		Client client = ClientBuilder.newClient(clientConfig);
-		WebTarget service = client.target(getEx1BaseURI()).path("person").path(String.valueOf(idPerson))
-				.path("/goal/foodSelection");
-		Response response = service.request(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).get();
-		int httpStatus = response.getStatus();
-		if (httpStatus == 200) {
-			FoodSelection foodSelection = response.readEntity(FoodSelection.class);
-			return foodSelection;
-		}
-		return null;
-	}
+	
 
 	/*
 	 * Getting the current Activity Selection of current Goal of a Person identified by idPerson.
