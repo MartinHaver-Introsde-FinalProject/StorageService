@@ -38,13 +38,13 @@ public class StorageResource {
 
 	private static URI getEx1BaseURI() {
 		//return UriBuilder.fromUri("http://localhost:8080/introsde.local-database-service/api").build();
-		return UriBuilder.fromUri("https://introsdelocaldatabaseservice.herokuapp.com/api").build();
+		return UriBuilder.fromUri("https://warm-gorge-12466.herokuapp.com/api").build();
 	}
 
-	private static URI getEx2BaseURI() {
+	//private static URI getEx2BaseURI() {
 		//return UriBuilder.fromUri("http://localhost:8080/introsde.external-adapter/api").build();
-		return UriBuilder.fromUri("https://introsdeexternaladapter.herokuapp.com/api").build();
-	}
+	//	return UriBuilder.fromUri("https://introsdeexternaladapter.herokuapp.com/api").build();
+	//}
 
 	/*
 	 * Getting information of the storage service.
