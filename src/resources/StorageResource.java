@@ -3,7 +3,6 @@ package resources;
 import java.io.IOException;
 import java.net.URI;
 import java.util.List;
-
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.ws.rs.Consumes;
@@ -24,12 +23,9 @@ import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
-
 import org.glassfish.jersey.client.ClientConfig;
-
 import model.Activity;
 import model.ActivitySelection;
-import model.FoodSelection;
 import model.Goal;
 import model.HealthMeasure;
 import model.HealthMeasureHistory;

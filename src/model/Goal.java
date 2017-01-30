@@ -102,16 +102,6 @@ public class Goal implements Serializable {
 	public void setShavedCalories(double shavedCalories) {
 		this.shavedCalories = shavedCalories;
 	}
-
-	
-	public List<FoodSelection> getFoodSelections() {
-		return foodSelections;
-	}
-
-	public void setFoodSelections(List<FoodSelection> foodSelections) {
-		this.foodSelections = foodSelections;
-	}
-
 	
 	public List<ActivitySelection> getActivitySelections() {
 		return activitySelections;
