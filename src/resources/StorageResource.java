@@ -57,7 +57,7 @@ public class StorageResource {
 	@GET
 	@Produces({ MediaType.TEXT_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
 	public String getInfo() {
-		return "Hello! This is Storage service by M.Haver.";
+		return "HelloThis is Storage service by M.Haver.";
 	}
 
 	/*
