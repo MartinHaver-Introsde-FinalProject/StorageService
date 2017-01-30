@@ -37,6 +37,9 @@ public class Goal implements Serializable {
 	@XmlElement(name = "shavedCalories")
 	private double shavedCalories;
 	
+	@XmlElementWrapper(name = "foodSelections")
+	private List<FoodSelection> foodSelections;
+	
 	@XmlElementWrapper(name = "activitySelections")
 	private List<ActivitySelection> activitySelections;
 	
@@ -99,6 +102,16 @@ public class Goal implements Serializable {
 	public void setShavedCalories(double shavedCalories) {
 		this.shavedCalories = shavedCalories;
 	}
+
+	
+	public List<FoodSelection> getFoodSelections() {
+		return foodSelections;
+	}
+
+	public void setFoodSelections(List<FoodSelection> foodSelections) {
+		this.foodSelections = foodSelections;
+	}
+
 	
 	public List<ActivitySelection> getActivitySelections() {
 		return activitySelections;

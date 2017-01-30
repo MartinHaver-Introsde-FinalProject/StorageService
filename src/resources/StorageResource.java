@@ -3,6 +3,7 @@ package resources;
 import java.io.IOException;
 import java.net.URI;
 import java.util.List;
+
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.ws.rs.Consumes;
@@ -23,9 +24,12 @@ import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
+
 import org.glassfish.jersey.client.ClientConfig;
+
 import model.Activity;
 import model.ActivitySelection;
+import model.FoodSelection;
 import model.Goal;
 import model.HealthMeasure;
 import model.HealthMeasureHistory;
@@ -232,6 +236,35 @@ public class StorageResource {
 	}
 
 	/*
+	 * Getting the current Food Selection of current Goal of a Person identified by idPerson.
+	 * 
+	 * FROM: http://localhost:8080/introsde.local-database-service/api/person/1/goal/foodSelection
+	 * 
+	 * URL: http://localhost:8080/introsde.storage-service/api/person/1/goal/foodSelection
+	 * 
+	 * GET: OK
+	 */
+
+	@GET
+	@Path("/person/{idPerson}/goal/foodSelection")
+	@Produces({ MediaType.TEXT_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	public FoodSelection getFoodSelectionOfCurrentGoalOfPersonById(@PathParam("idPerson") int idPerson) {
+		System.out.println("Getting the current Food Selection of current Goal of a Person identified by idPerson = "
+				+ idPerson + "...");
+		ClientConfig clientConfig = new ClientConfig();
+		Client client = ClientBuilder.newClient(clientConfig);
+		WebTarget service = client.target(getEx1BaseURI()).path("person").path(String.valueOf(idPerson))
+				.path("/goal/foodSelection");
+		Response response = service.request(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).get();
+		int httpStatus = response.getStatus();
+		if (httpStatus == 200) {
+			FoodSelection foodSelection = response.readEntity(FoodSelection.class);
+			return foodSelection;
+		}
+		return null;
+	}
+
+	/*
 	 * Getting the current Activity Selection of current Goal of a Person identified by idPerson.
 	 * 
 	 * FROM: http://localhost:8080/introsde.local-database-service/api/person/1/goal/activitySelection
@@ -317,6 +350,37 @@ public class StorageResource {
 	}
 
 	/*
+	 * Getting recipe from external foods service of Edaman.
+	 * 
+	 * FROM: http://localhost:8080/introsde.external-adapter/api/recipe?q=pork&q=carrot&calories=1000
+	 * 
+	 * URL: http://localhost:8080/introsde.storage-service/api/recipe?q=pork&q=carrot&calories=1000
+	 * 
+	 * GET: OK
+	 */
+
+	@GET
+	@Path("/recipe")
+	@Produces({ MediaType.TEXT_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	public List<FoodSelection> getFoodSelection(@Context UriInfo ui) {
+		MultivaluedMap<String, String> queryParams = ui.getQueryParameters();
+		List<String> q = queryParams.get("q");
+		double calories = Double.parseDouble(queryParams.getFirst("calories"));
+
+		ClientConfig clientConfig = new ClientConfig();
+		Client client = ClientBuilder.newClient(clientConfig);
+		WebTarget service = client.target(getEx2BaseURI()).path("recipe").queryParam("q", q).queryParam("calories", calories);
+		Response response = service.request(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).get();
+		int httpStatus = response.getStatus();
+		if (httpStatus == 200) {
+			List<FoodSelection> foods = response.readEntity(new GenericType<List<FoodSelection>>() {
+			});
+			return foods;
+		}
+		return null;
+	}
+
+	/*
 	 * Creating new Goal without any Food Selection and Activity Selection for a Person identified by idPerson
 	 * 
 	 * FROM: http://localhost:8080/introsde.local-database-service/api/person/1/goal
@@ -378,6 +442,43 @@ public class StorageResource {
 				.path("healthMeasure").path(healthMeasureType);
 		Response response = service.request(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON)
 				.post(Entity.json(healthMeasure));
+		int httpStatus = response.getStatus();
+		if (httpStatus == 200) {
+			Person person = response.readEntity(Person.class);
+			return person;
+		}
+		return null;
+	}
+
+	/*
+	 * Creating new Food Selection for current Goal of a Person
+	 * 
+	 * FROM: http://localhost:8080/introsde.local-database-service/api/person/1/goal/foodSelection
+	 * 
+	 * URL: http://localhost:8080/introsde.storage-service/api/person/1/goal/foodSelection
+	 * 
+	 * POST: OK
+	 * 
+	 * { "idFoodSelection": 0, "label": "Thai Chicken Salad", "image":
+	 * "https://www.edamam.com/web-img/c5c/c5c51c310b92f9f47c5a34ce7af6328b.jpg",
+	 * "calories": 956, "weight": 637, "ingredients":
+	 * "1: Little gem lettuce leaves and cucumber batons to serve (20.0);2: 2 garlic cloves , finely chopped (6.0);3: A small handful mint and coriander leaves (7.98);4: 3.0 tbsp lime juice (46.03094);5: 1 stalk lemon grass , woody outer leaves removed, finely chopped (20.0);6: 2 red chilli , finely chopped (0.0);7: 100.0ml chicken stock (101.4456);8: 400.0g minced chicken (buy minced or whizz chicken thigh fillets in a food processor) (400.0);9: A thumb-sized piece root ginger , grated (0.001);10: 2.0 tbsp fish sauce (36.0);"
+	 * , "current": 1 }
+	 */
+
+	@POST
+	@Path("/person/{idPerson}/goal/foodSelection")
+	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+	@Produces({ MediaType.TEXT_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	public Person saveGoalForPerson(@PathParam("idPerson") int idPerson, FoodSelection foodSelection)
+			throws IOException {
+		System.out.println("Creating new food selection for person with id = " + idPerson + "...");
+		ClientConfig clientConfig = new ClientConfig();
+		Client client = ClientBuilder.newClient(clientConfig);
+		WebTarget service = client.target(getEx1BaseURI()).path("person").path(String.valueOf(idPerson)).path("goal")
+				.path("foodSelection");
+		Response response = service.request(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON)
+				.post(Entity.json(foodSelection));
 		int httpStatus = response.getStatus();
 		if (httpStatus == 200) {
 			Person person = response.readEntity(Person.class);
