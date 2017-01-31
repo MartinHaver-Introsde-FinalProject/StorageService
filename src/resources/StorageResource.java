@@ -24,6 +24,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 import org.glassfish.jersey.client.ClientConfig;
+import org.json.JSONObject;
 import model.Activity;
 import model.ActivitySelection;
 import model.Goal;
@@ -43,9 +44,29 @@ public class StorageResource {
 
 	private static URI getEx2BaseURI() {
 		//return UriBuilder.fromUri("http://localhost:8080/introsde.external-adapter/api").build();
-		return UriBuilder.fromUri("https://introsdeexternaladapter.herokuapp.com/api").build();
+		return UriBuilder.fromUri("https://gentle-anchorage-46419.herokuapp.com/adapter").build();
 	}
 
+	//Getting a motivation quote from forismatic
+    @GET
+    @Path("/getQuote")
+    public Response getQuote2() {
+       
+    	ClientConfig clientConfig = new ClientConfig();
+		Client client = ClientBuilder.newClient(clientConfig);
+		WebTarget service = client.target(getEx2BaseURI()).path("getQuote");
+		Response response = service.request(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).get();
+		int httpStatus = response.getStatus();
+		JSONObject o = new JSONObject(response.toString());
+       if(httpStatus == 200){
+           return Response.ok(o.toString()).build();
+        }
+       
+       return Response.status(204).build();
+       
+    }
+	
+	
 	/*
 	 * Getting information of the storage service.
 	 * 
