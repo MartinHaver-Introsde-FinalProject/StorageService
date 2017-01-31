@@ -1,6 +1,8 @@
 package resources;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.URI;
 import java.util.List;
 import javax.ejb.LocalBean;
@@ -23,6 +25,11 @@ import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
+
+import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
 import org.glassfish.jersey.client.ClientConfig;
 import org.json.JSONObject;
 import model.Activity;
@@ -47,24 +54,34 @@ public class StorageResource {
 		return UriBuilder.fromUri("https://gentle-anchorage-46419.herokuapp.com/adapter").build();
 	}
 
+	
 	//Getting a motivation quote from forismatic
-    @GET
-    @Path("/getQuote")
-    public Response getQuote2() {
-       
-    	ClientConfig clientConfig = new ClientConfig();
-		Client client = ClientBuilder.newClient(clientConfig);
-		WebTarget service = client.target(getEx2BaseURI()).path("getQuote");
-		Response response = service.request(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).get();
-		int httpStatus = response.getStatus();
-		JSONObject o = new JSONObject(response.toString());
-       if(httpStatus == 200){
-           return Response.ok(o.toString()).build();
+	 @GET
+     @Path("/getQuote")
+     public Response getQuote2() throws ClientProtocolException, IOException {
+        
+        String ENDPOINT = "https://gentle-anchorage-46419.herokuapp.com/adapter/getQuote";
+
+        DefaultHttpClient client = new DefaultHttpClient();
+        HttpGet request = new HttpGet(ENDPOINT);
+        HttpResponse response = client.execute(request);
+        
+        BufferedReader rd = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
+
+        StringBuffer result = new StringBuffer();
+        String line = "";
+        while ((line = rd.readLine()) != null) {
+            result.append(line);
         }
-       
-       return Response.status(204).build();
-       
-    }
+        
+        JSONObject o = new JSONObject(result.toString());
+        
+        if(response.getStatusLine().getStatusCode() == 200){
+            return Response.ok(o.toString()).build();
+         }
+        
+        return Response.status(204).build();
+     }
 	
 	
 	/*
