@@ -107,5 +107,4 @@ public class Goal implements Serializable {
 	public void setActivitySelections(List<ActivitySelection> activitySelections) {
 		this.activitySelections = activitySelections;
 	}
-
 }

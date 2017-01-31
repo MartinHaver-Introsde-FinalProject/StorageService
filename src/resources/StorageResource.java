@@ -25,7 +25,6 @@ import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
-
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.HttpGet;
@@ -41,21 +40,14 @@ import model.Person;
 
 @Stateless
 @LocalBean
-@Path("/api")
+@Path("/storage")
 public class StorageResource {
 
 	private static URI getEx1BaseURI() {
-		//return UriBuilder.fromUri("http://localhost:8080/introsde.local-database-service/api").build();
-		return UriBuilder.fromUri("https://warm-gorge-12466.herokuapp.com/api").build();
+		return UriBuilder.fromUri("https://warm-gorge-12466.herokuapp.com/database").build();
 	}
 
-	private static URI getEx2BaseURI() {
-		//return UriBuilder.fromUri("http://localhost:8080/introsde.external-adapter/api").build();
-		return UriBuilder.fromUri("https://gentle-anchorage-46419.herokuapp.com/adapter").build();
-	}
-
-	
-	//Getting a motivation quote from forismatic
+	//Getting a motivation quote from external service Forismatic.com
 	 @GET
      @Path("/getQuote")
      public Response getQuote2() throws ClientProtocolException, IOException {
@@ -65,49 +57,27 @@ public class StorageResource {
         DefaultHttpClient client = new DefaultHttpClient();
         HttpGet request = new HttpGet(ENDPOINT);
         HttpResponse response = client.execute(request);
-        
         BufferedReader rd = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
-
         StringBuffer result = new StringBuffer();
         String line = "";
         while ((line = rd.readLine()) != null) {
             result.append(line);
         }
-        
         JSONObject o = new JSONObject(result.toString());
-        
         if(response.getStatusLine().getStatusCode() == 200){
             return Response.ok(o.toString()).build();
          }
-        
         return Response.status(204).build();
      }
 	
-	
-	/*
-	 * Getting information of the storage service.
-	 * 
-	 * http://localhost:8080/introsde.storage-service/api
-	 * 
-	 * GET: OK
-	 */
-
+	//Info about the service.
 	@GET
 	@Produces({ MediaType.TEXT_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
 	public String getInfo() {
-		return "Hello! This is Storage service.";
+		return "This storage service is part of final project by M.Haver.";
 	}
 
-	/*
-	 * Getting list of people existing in database.
-	 * 
-	 * FROM: http://localhost:8080/introsde.local-database-service/api/person
-	 * 
-	 * URL: http://localhost:8080/introsde.storage-service/api/person
-	 * 
-	 * GET: OK
-	 */
-
+	//Getting list of people existing in database.
 	@GET
 	@Path("/person")
 	@Produces({ MediaType.TEXT_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
@@ -126,16 +96,7 @@ public class StorageResource {
 		return null;
 	}
 
-	/*
-	 * Getting the detail information of a Person identified by idPerson.
-	 * 
-	 * FROM: http://localhost:8080/introsde.local-database-service/api/person/1
-	 * 
-	 * URL: http://localhost:8080/introsde.storage-service/api/person/1
-	 * 
-	 * GET: OK
-	 */
-
+	//Getting the detail information of a Person identified by idPerson.
 	@GET
 	@Path("/person/{idPerson}")
 	@Produces({ MediaType.TEXT_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
@@ -153,16 +114,7 @@ public class StorageResource {
 		return null;
 	}
 
-	/*
-	 * Getting the current Goal of a Person identified by idPerson.
-	 * 
-	 * FROM: http://localhost:8080/introsde.local-database-service/api/person/1/goal
-	 * 
-	 * URL: http://localhost:8080/introsde.storage-service/api/person/1/goal
-	 * 
-	 * GET: OK
-	 */
-
+	//Getting the current Goal of a Person identified by idPerson.
 	@GET
 	@Path("person/{idPerson}/goal")
 	@Produces({ MediaType.TEXT_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
@@ -180,16 +132,7 @@ public class StorageResource {
 		return null;
 	}
 
-	/*
-	 * Getting the list of the Goal histories of a Person identified by idPerson
-	 * 
-	 * FROM: http://localhost:8080/introsde.local-database-service/api/person/1/goalHistory
-	 * 
-	 * URL: http://localhost:8080/introsde.storage-service/api/person/1/goalHistory
-	 * 
-	 * GET: OK
-	 */
-
+	//Getting the list of the Goal histories of a Person identified by idPerson
 	@GET
 	@Path("/person/{idPerson}/goalHistory")
 	@Produces({ MediaType.TEXT_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
@@ -209,16 +152,7 @@ public class StorageResource {
 		return null;
 	}
 
-	/*
-	 * Getting the list of Health Measures of a Person identified by idPerson.
-	 * 
-	 * FROM: http://localhost:8080/introsde.local-database-service/api/person/1/healthMeasure
-	 * 
-	 * URL: http://localhost:8080/introsde.storage-service/api/person/1/healthMeasure
-	 * 
-	 * GET: OK
-	 */
-
+	//Getting the list of Health Measures of a Person identified by idPerson.
 	@GET
 	@Path("/person/{idPerson}/healthMeasure")
 	@Produces({ MediaType.TEXT_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
@@ -238,16 +172,7 @@ public class StorageResource {
 		return null;
 	}
 
-	/*
-	 * Getting the list of Health Measure Histories of a Person identified by idPerson.
-	 * 
-	 * FROM: http://localhost:8080/introsde.local-database-service/api/person/1/healthMeasureHistory
-	 * 
-	 * URL: http://localhost:8080/introsde.storage-service/api/person/1/healthMeasureHistory
-	 * 
-	 * GET: OK
-	 */
-
+	//Getting the list of Health Measure Histories of a Person identified by idPerson.
 	@GET
 	@Path("/person/{idPerson}/healthMeasureHistory")
 	@Produces({ MediaType.TEXT_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
@@ -269,16 +194,7 @@ public class StorageResource {
 		return null;
 	}
 
-	/*
-	 * Getting the current Activity Selection of current Goal of a Person identified by idPerson.
-	 * 
-	 * FROM: http://localhost:8080/introsde.local-database-service/api/person/1/goal/activitySelection
-	 * 
-	 * URL: http://localhost:8080/introsde.storage-service/api/person/1/goal/activitySelection
-	 * 
-	 * GET: OK
-	 */
-
+	//Getting the current Activity Selection of current Goal of a Person identified by idPerson.
 	@GET
 	@Path("/person/{idPerson}/goal/activitySelection")
 	@Produces({ MediaType.TEXT_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
@@ -299,16 +215,7 @@ public class StorageResource {
 		return null;
 	}
 
-	/*
-	 * Getting the list of activities existing in database.
-	 * 
-	 * FROM: http://localhost:8080/introsde.local-database-service/api/activity
-	 * 
-	 * URL: http://localhost:8080/introsde.storage-service/api/activity
-	 * 
-	 * GET: OK
-	 */
-
+	//Getting the list of activities existing in database.
 	@GET
 	@Path("/activity")
 	@Produces({ MediaType.TEXT_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
@@ -328,16 +235,7 @@ public class StorageResource {
 		return null;
 	}
 
-	/*
-	 * Getting the detail information of a activity identified by idActivity.
-	 * 
-	 * FROM: http://localhost:8080/introsde.local-database-service/api/activity/1
-	 * 
-	 * URL: http://localhost:8080/introsde.storage-service/api/activity/1
-	 * 
-	 * GET: OK
-	 */
-
+	//Getting the detail information of a activity identified by idActivity.
 	@GET
 	@Path("/activity/{idActivity}")
 	@Produces({ MediaType.TEXT_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
@@ -354,21 +252,7 @@ public class StorageResource {
 		return null;
 	}
 
-	/*
-	 * Creating new Goal without any Food Selection and Activity Selection for a Person identified by idPerson
-	 * 
-	 * FROM: http://localhost:8080/introsde.local-database-service/api/person/1/goal
-	 * 
-	 * URL: http://localhost:8080/introsde.storage-service/api/person/1/goal
-	 * 
-	 * POST: OK
-	 * 
-	 * { "idGoal": 0, "goalName": "Lose weight 0.5 kg per week 3", "current": 1,
-	 * "idealWeight": 65, "date": "06-12-2016", "idealBmi": 22,
-	 * "shavedCalories": null, "foodSelections": null, "activitySelections":
-	 * null }
-	 */
-
+	//Creating new Goal without any Food Selection and Activity Selection for a Person identified by idPerson
 	@POST
 	@Path("/person/{idPerson}/goal")
 	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
@@ -390,18 +274,7 @@ public class StorageResource {
 		return null;
 	}
 
-	/*
-	 * Creating new Health Measure belonging to a Health Measure Type and putting the old Health Measure into Health Measure History for a Person identified by idPerson.
-	 * 
-	 * FROM: http://localhost:8080/introsde.local-database-service/api/person/1/healthMeasure/weight
-	 * 
-	 * URL: http://localhost:8080/introsde.storage-service/api/person/1/healthMeasure/weight
-	 * 
-	 * POST: OK
-	 *
-	 * { "idHealthMeasure": 1, "value": "68", "measureDefinition": null }
-	 */
-
+	//Creating new Health Measure belonging to a Health Measure Type and putting the old Health Measure into Health Measure History for a Person identified by idPerson.
 	@POST
 	@Path("/person/{idPerson}/healthMeasure/{healthMeasureType}")
 	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
@@ -424,19 +297,7 @@ public class StorageResource {
 		return null;
 	}
 
-	/*
-	 * Creating new Activity Selection for current Goal of a Person
-	 *
-	 * FROM: http://localhost:8080/introsde.local-database-service/api/person/1/goal/activitySelection
-	 * 
-	 * URL: http://localhost:8080/introsde.storage-service/api/person/1/goal/activitySelection
-	 * 
-	 * POST: OK
-	 * 
-	 * { "idActivity": 4, "activityName": "Running, 5 mph 12 min/mile",
-	 * "caloriesPerHour": "455", "activityType": "Running" }
-	 */
-
+	//Creating new Activity Selection for current Goal of a Person
 	@POST
 	@Path("/person/{idPerson}/goal/activitySelection")
 	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
@@ -458,18 +319,7 @@ public class StorageResource {
 		return null;
 	}
 
-	/*
-	 * Updating Activity Selection (time, usedCalories)
-	 * 
-	 * FROM: http://localhost:8080/introsde.local-database-service/api/person/1/goal/activitySelection
-	 * 
-	 * URL: http://localhost:8080/introsde.storage-service/api/person/1/goal/activitySelection
-	 * 
-	 * PUT: OK
-	 * 
-	 * { "time": 2, "usedCalories": 1000 }
-	 */
-
+	//Updating Activity Selection (time, usedCalories)
 	@PUT
 	@Path("/person/{idPerson}/goal/activitySelection")
 	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
@@ -492,18 +342,7 @@ public class StorageResource {
 		return null;
 	}
 
-	/*
-	 * Updating the Goal.
-	 * 
-	 * FROM: http://localhost:8080/introsde.local-database-service/api/person/1/goal
-	 * 
-	 * URL: http://localhost:8080/introsde.storage-service/api/person/1/goal
-	 * 
-	 * PUT: OK
-	 * 
-	 * { "shavedCalories": 600 }
-	 */
-
+	//Updating the Goal.
 	@PUT
 	@Path("/person/{idPerson}/goal")
 	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
@@ -522,5 +361,4 @@ public class StorageResource {
 		}
 		return null;
 	}
-
 }
